@@ -1,0 +1,8 @@
+{
+  "name": "Orçamento Doméstico",
+  "description": "Um dashboard de controle financeiro pessoal e orçamento doméstico, baseado em metas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

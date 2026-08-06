@@ -1,0 +1,21 @@
+{
+  "collections": [
+    {
+      "name": "user_budgets",
+      "description": "Stores budget data for each user.",
+      "securityRules": {
+        "read": "auth != null && request.auth.uid == resource.id",
+        "write": "auth != null && request.auth.uid == resource.id"
+      },
+      "schema": {
+        "income": "number",
+        "expenses": "object",
+        "expenseItems": "object",
+        "autoFill": "object",
+        "goals": "object",
+        "month": "string",
+        "updatedAt": "timestamp"
+      }
+    }
+  ]
+}
