@@ -17,6 +17,15 @@ export interface AutoFillItem {
   defaultVal: number;
 }
 
+export interface HistoricalRecord {
+  id: string;
+  month: string;
+  income: number;
+  expenses: Record<CategoryName, number>;
+  expenseItems: Record<CategoryName, ExpenseItem[]>;
+  timestamp: number;
+}
+
 export interface BudgetData {
   income: number;
   expenses: Record<CategoryName, number>;
@@ -24,4 +33,5 @@ export interface BudgetData {
   goals: Record<CategoryName, number>;
   autoFill: Record<CategoryName, AutoFillItem[]>;
   month: string;
+  history?: HistoricalRecord[];
 }

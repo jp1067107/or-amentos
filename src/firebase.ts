@@ -1,11 +1,14 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getAuth, signInAnonymously, onAuthStateChanged, User, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import firebaseConfig from '../firebase-applet-config.json';
 import { BudgetData } from './types';
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+enableIndexedDbPersistence(db).catch((err) => {
+  console.log("Persistence error:", err);
+});
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 

@@ -12,6 +12,12 @@ export default defineConfig(() => {
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['icon.svg'],
+        workbox: {
+          clientsClaim: true,
+          skipWaiting: true,
+          navigateFallbackDenylist: [/^\/api/, /googleapis\.com/],
+          maximumFileSizeToCacheInBytes: 3000000,
+        },
         manifest: {
           name: 'Meu Orçamento',
           short_name: 'Orçamento',
@@ -41,11 +47,19 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom'],
+            firebase: ['firebase/app', 'firebase/firestore', 'firebase/auth'],
+            recharts: ['recharts'],
+          }
+        }
+      }
+    },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
   };

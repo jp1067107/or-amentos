@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { BudgetData } from './types';
+import { BudgetData, HistoricalRecord } from './types';
 import { DEFAULT_BUDGET } from './constants';
-import { GoalsTab } from './components/GoalsTab';
-import { ExpensesTab } from './components/ExpensesTab';
+import { Suspense, lazy } from 'react';
+const GoalsTab = lazy(() => import('./components/GoalsTab').then(module => ({ default: module.GoalsTab })));
+const ExpensesTab = lazy(() => import('./components/ExpensesTab').then(module => ({ default: module.ExpensesTab })));
+const HistoryTab = lazy(() => import('./components/HistoryTab').then(module => ({ default: module.HistoryTab })));
 import { auth, googleProvider, saveBudgetToFirestore, loadBudgetFromFirestore } from './firebase';
 import { signInWithPopup, User } from 'firebase/auth';
-import { LogOut, RotateCcw, Settings, ChevronDown } from 'lucide-react';
+import { LogOut, RotateCcw, Settings, ChevronDown, Save } from 'lucide-react';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -13,7 +15,7 @@ export default function App() {
   
   const [budgetData, setBudgetData] = useState<BudgetData>(DEFAULT_BUDGET);
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [activeTab, setActiveTab] = useState<'orcamento' | 'metas'>('orcamento');
+  const [activeTab, setActiveTab] = useState<'orcamento' | 'metas' | 'historico'>('orcamento');
   const [showResetModal, setShowResetModal] = useState(false);
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
 
@@ -44,6 +46,24 @@ export default function App() {
       saveBudgetToFirestore(user.uid, budgetData);
     }
   }, [budgetData, user, dataLoaded]);
+
+  const handleSaveCurrentMonth = () => {
+    const record: HistoricalRecord = {
+      id: Date.now().toString(),
+      month: budgetData.month,
+      income: budgetData.income,
+      expenses: budgetData.expenses,
+      expenseItems: budgetData.expenseItems,
+      timestamp: Date.now()
+    };
+    
+    setBudgetData(prev => ({
+      ...prev,
+      history: [...(prev.history || []), record]
+    }));
+    setShowOptionsMenu(false);
+    setActiveTab('historico');
+  };
 
   const handleLogin = async () => {
     try {
@@ -132,6 +152,12 @@ export default function App() {
                    <p className="text-xs text-[#a1a1aa] truncate">{user.email}</p>
                  </div>
                  <button 
+                   onClick={handleSaveCurrentMonth}
+                   className="w-full text-left px-4 py-2 text-sm font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-[#eab308] transition-colors flex items-center gap-2"
+                 >
+                   <Save className="w-4 h-4" /> Salvar Mês Atual
+                 </button>
+                 <button 
                    onClick={() => { setShowResetModal(true); setShowOptionsMenu(false); }}
                    className="w-full text-left px-4 py-2 text-sm font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-red-400 transition-colors flex items-center gap-2"
                  >
@@ -162,13 +188,23 @@ export default function App() {
             >
               Metas
             </button>
+            <button 
+              onClick={() => setActiveTab('historico')}
+              className={`px-4 sm:px-6 py-4 md:px-8 text-[11px] sm:text-xs md:text-sm font-bold tracking-wide uppercase border-b-2 transition-colors whitespace-nowrap flex-1 text-center ${activeTab === 'historico' ? 'border-[#eab308] text-[#eab308]' : 'border-transparent text-[#a1a1aa] hover:text-white'}`}
+            >
+              Histórico
+            </button>
         </header>
 
-        {activeTab === 'orcamento' ? (
-          <ExpensesTab budgetData={budgetData} setBudgetData={setBudgetData} />
-        ) : (
-          <GoalsTab budgetData={budgetData} setBudgetData={setBudgetData} onBack={() => setActiveTab('orcamento')} />
-        )}
+        <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="w-8 h-8 border-4 border-[#eab308] border-t-transparent rounded-full animate-spin"></div></div>}>
+          {activeTab === 'orcamento' ? (
+            <ExpensesTab budgetData={budgetData} setBudgetData={setBudgetData} />
+          ) : activeTab === 'metas' ? (
+            <GoalsTab budgetData={budgetData} setBudgetData={setBudgetData} onBack={() => setActiveTab('orcamento')} />
+          ) : (
+            <HistoryTab budgetData={budgetData} setBudgetData={setBudgetData} />
+          )}
+        </Suspense>
       </div>
 
       {/* Reset Confirmation Modal */}
