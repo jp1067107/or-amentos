@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BudgetData, HistoricalRecord } from './types';
 import { DEFAULT_BUDGET } from './constants';
-import { Suspense, lazy } from 'react';
-const GoalsTab = lazy(() => import('./components/GoalsTab').then(module => ({ default: module.GoalsTab })));
-const ExpensesTab = lazy(() => import('./components/ExpensesTab').then(module => ({ default: module.ExpensesTab })));
-const HistoryTab = lazy(() => import('./components/HistoryTab').then(module => ({ default: module.HistoryTab })));
-import { auth, googleProvider, saveBudgetToFirestore, loadBudgetFromFirestore, subscribeToBudget } from './firebase';
+import { GoalsTab } from './components/GoalsTab';
+import { ExpensesTab } from './components/ExpensesTab';
+import { HistoryTab } from './components/HistoryTab';
+import { auth, googleProvider, saveBudgetToFirestore, loadBudgetFromFirestore } from './firebase';
 import { signInWithPopup, User } from 'firebase/auth';
 import { LogOut, RotateCcw, Settings, ChevronDown, Save } from 'lucide-react';
 
@@ -29,13 +28,12 @@ export default function App() {
 
   useEffect(() => {
     if (user) {
-      const unsubscribe = subscribeToBudget(user.uid, (data) => {
+      loadBudgetFromFirestore(user.uid).then(data => {
         if (data) {
           setBudgetData(data);
         }
         setDataLoaded(true);
       });
-      return () => unsubscribe();
     } else {
       setDataLoaded(false);
       setBudgetData(DEFAULT_BUDGET);
@@ -197,15 +195,13 @@ export default function App() {
             </button>
         </header>
 
-        <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="w-8 h-8 border-4 border-[#eab308] border-t-transparent rounded-full animate-spin"></div></div>}>
-          {activeTab === 'orcamento' ? (
-            <ExpensesTab budgetData={budgetData} setBudgetData={setBudgetData} />
-          ) : activeTab === 'metas' ? (
-            <GoalsTab budgetData={budgetData} setBudgetData={setBudgetData} onBack={() => setActiveTab('orcamento')} />
-          ) : (
-            <HistoryTab budgetData={budgetData} setBudgetData={setBudgetData} />
-          )}
-        </Suspense>
+        {activeTab === 'orcamento' ? (
+          <ExpensesTab budgetData={budgetData} setBudgetData={setBudgetData} />
+        ) : activeTab === 'metas' ? (
+          <GoalsTab budgetData={budgetData} setBudgetData={setBudgetData} onBack={() => setActiveTab('orcamento')} />
+        ) : (
+          <HistoryTab budgetData={budgetData} setBudgetData={setBudgetData} />
+        )}
       </div>
 
       {/* Reset Confirmation Modal */}
