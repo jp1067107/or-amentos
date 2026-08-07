@@ -5,7 +5,7 @@ import { Suspense, lazy } from 'react';
 const GoalsTab = lazy(() => import('./components/GoalsTab').then(module => ({ default: module.GoalsTab })));
 const ExpensesTab = lazy(() => import('./components/ExpensesTab').then(module => ({ default: module.ExpensesTab })));
 const HistoryTab = lazy(() => import('./components/HistoryTab').then(module => ({ default: module.HistoryTab })));
-import { auth, googleProvider, saveBudgetToFirestore, loadBudgetFromFirestore } from './firebase';
+import { auth, googleProvider, saveBudgetToFirestore, loadBudgetFromFirestore, subscribeToBudget } from './firebase';
 import { signInWithPopup, User } from 'firebase/auth';
 import { LogOut, RotateCcw, Settings, ChevronDown, Save } from 'lucide-react';
 
@@ -29,12 +29,13 @@ export default function App() {
 
   useEffect(() => {
     if (user) {
-      loadBudgetFromFirestore(user.uid).then(data => {
+      const unsubscribe = subscribeToBudget(user.uid, (data) => {
         if (data) {
           setBudgetData(data);
         }
         setDataLoaded(true);
       });
+      return () => unsubscribe();
     } else {
       setDataLoaded(false);
       setBudgetData(DEFAULT_BUDGET);
