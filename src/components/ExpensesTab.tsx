@@ -31,10 +31,12 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
   const [editExpenseName, setEditExpenseName] = useState('');
   const [editExpenseValue, setEditExpenseValue] = useState('');
 
-  const handleAddExpense = (category: CategoryName, name: string, value: number) => {
-    if (!name || value <= 0) return;
+  const handleAddExpense = (category: CategoryName, name: string, value: number | string) => {
+    let numValue = typeof value === 'string' ? parseFloat(value.replace(',', '.')) : value;
+    if (isNaN(numValue)) numValue = 0;
+    if (!name || numValue <= 0) return;
     
-    const newItem = { id: Date.now().toString() + Math.random().toString(), name, value };
+    const newItem = { id: Date.now().toString() + Math.random().toString(), name, value: numValue };
 
     setBudgetData(prev => ({
       ...prev,
@@ -44,7 +46,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
       },
       expenses: {
         ...prev.expenses,
-        [category]: (prev.expenses[category] || 0) + value
+        [category]: (prev.expenses[category] || 0) + numValue
       }
     }));
     
@@ -67,7 +69,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
   };
 
   const handleSaveEditExpense = (category: CategoryName, id: string, oldVal: number) => {
-    const parsedVal = parseFloat(editExpenseValue);
+    const parsedVal = parseFloat(editExpenseValue.replace(',', '.'));
     if (!editExpenseName || isNaN(parsedVal) || parsedVal < 0) return;
 
     setBudgetData(prev => {
@@ -120,7 +122,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
   const saveHeader = () => {
     setBudgetData(prev => ({
       ...prev,
-      income: parseFloat(editIncome) || 0,
+      income: parseFloat(editIncome.replace(',', '.')) || 0,
       month: editMonth
     }));
     setIsEditingHeader(false);
@@ -152,7 +154,8 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
               <div className="flex items-center border border-[#333] rounded bg-[#222] px-2 focus-within:border-[#eab308] flex-1 sm:w-auto min-w-[100px]">
                 <span className="text-[#a1a1aa] text-sm">R$</span>
                 <input 
-                  type="number" 
+                  type="text" 
+                  inputMode="decimal"
                   value={editIncome} 
                   onChange={e => setEditIncome(e.target.value)}
                   className="w-full sm:w-24 px-2 py-1 text-sm bg-transparent text-white focus:outline-none"
@@ -258,7 +261,8 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                                 className="flex-1 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-sm focus:outline-none focus:border-[#eab308]"
                               />
                               <input 
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 value={editExpenseValue}
                                 onChange={e => setEditExpenseValue(e.target.value)}
                                 className="w-24 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-sm focus:outline-none focus:border-[#eab308]"
@@ -275,7 +279,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                               <span className="text-gray-200 text-sm font-medium">{exp.name}</span>
                               <div className="flex items-center gap-3">
                                 <span className="text-white text-sm font-bold">{formatCurrency(exp.value)}</span>
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                   <button 
                                     onClick={() => {
                                       setEditingExpenseId(exp.id);
@@ -285,14 +289,14 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                                     className="text-[#555] hover:text-[#eab308] transition-colors p-1"
                                     title="Editar"
                                   >
-                                    <Edit2 className="w-3.5 h-3.5" />
+                                    <Edit2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                                   </button>
                                   <button 
                                     onClick={() => handleRemoveExpense(selectedCategory, exp.id, exp.value)}
                                     className="text-[#555] hover:text-red-500 transition-colors p-1"
                                     title="Remover"
                                   >
-                                    <Trash2 className="w-3.5 h-3.5" />
+                                    <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                                   </button>
                                 </div>
                               </div>
@@ -320,7 +324,8 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                       <div className="w-32 relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] text-[10px]">R$</span>
                         <input 
-                          type="number"
+                          type="text"
+                          inputMode="decimal"
                           placeholder="0,00"
                           value={newValue}
                           onChange={e => setNewValue(e.target.value)}
@@ -329,7 +334,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                       </div>
                     </div>
                     <button 
-                      onClick={() => handleAddExpense(selectedCategory, newName, parseFloat(newValue))}
+                      onClick={() => handleAddExpense(selectedCategory, newName, newValue)}
                       disabled={!newName || !newValue || parseFloat(newValue) <= 0}
                       className="w-full flex items-center justify-center gap-2 py-2 bg-[#eab308] text-black rounded-lg text-sm font-bold hover:bg-[#ca9a04] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -385,9 +390,10 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                               <div className="flex-1 min-w-[100px] relative">
                                 <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#71717a] text-[10px]">R$</span>
                                 <input 
-                                  type="number"
+                                  type="text"
+                                  inputMode="decimal"
                                   defaultValue={item.defaultVal}
-                                  onChange={(e) => setAutoFillInputs(prev => ({...prev, [item.id]: parseFloat(e.target.value)}))}
+                                  onChange={(e) => setAutoFillInputs(prev => ({...prev, [item.id]: parseFloat(e.target.value.replace(',', '.'))}))}
                                   className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded px-2 pl-7 py-1.5 text-xs focus:outline-none focus:border-[#eab308]"
                                 />
                               </div>
@@ -421,7 +427,8 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                             className="w-full sm:flex-1 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-xs focus:outline-none focus:border-[#eab308]"
                           />
                           <input 
-                            type="number"
+                            type="text"
+                            inputMode="decimal"
                             placeholder="Valor"
                             value={newAutoFillValue}
                             onChange={e => setNewAutoFillValue(e.target.value)}
