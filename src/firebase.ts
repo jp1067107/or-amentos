@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc, getDoc, enableIndexedDbPersistence } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, enableIndexedDbPersistence, onSnapshot } from 'firebase/firestore';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import firebaseConfig from '../firebase-applet-config.json';
 import { BudgetData } from './types';
@@ -34,4 +34,17 @@ export const loadBudgetFromFirestore = async (userId: string): Promise<BudgetDat
     console.error('Error loading budget', e);
   }
   return null;
+};
+
+export const subscribeToBudget = (userId: string, callback: (data: BudgetData | null) => void) => {
+  return onSnapshot(doc(db, 'user_budgets', userId), (docSnap) => {
+    if (docSnap.exists()) {
+      callback(docSnap.data() as BudgetData);
+    } else {
+      callback(null);
+    }
+  }, (err) => {
+    console.error('Error listening to budget:', err);
+    callback(null);
+  });
 };

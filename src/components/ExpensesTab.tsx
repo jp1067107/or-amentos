@@ -6,6 +6,25 @@ import { SummaryTable } from './SummaryTable';
 import { formatCurrency } from '../utils';
 import { ChevronLeft, Plus, ChevronDown, ChevronUp, Trash2, Edit2, Check } from 'lucide-react';
 
+const parseMoney = (val: string | number): number => {
+  if (typeof val === 'number') return val;
+  if (!val) return 0;
+  let cleaned = val.replace(/[^\d.,]/g, '');
+  if (cleaned.includes(',') && cleaned.includes('.')) {
+    const lastComma = cleaned.lastIndexOf(',');
+    const lastDot = cleaned.lastIndexOf('.');
+    if (lastComma > lastDot) {
+      cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+    } else {
+      cleaned = cleaned.replace(/,/g, '');
+    }
+  } else if (cleaned.includes(',')) {
+    cleaned = cleaned.replace(',', '.');
+  }
+  const result = parseFloat(cleaned);
+  return isNaN(result) ? 0 : result;
+};
+
 interface ExpensesTabProps {
   budgetData: BudgetData;
   setBudgetData: React.Dispatch<React.SetStateAction<BudgetData>>;
@@ -32,8 +51,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
   const [editExpenseValue, setEditExpenseValue] = useState('');
 
   const handleAddExpense = (category: CategoryName, name: string, value: number | string) => {
-    let numValue = typeof value === 'string' ? parseFloat(value.replace(',', '.')) : value;
-    if (isNaN(numValue)) numValue = 0;
+    let numValue = parseMoney(value);
     if (!name || numValue <= 0) return;
     
     const newItem = { id: Date.now().toString() + Math.random().toString(), name, value: numValue };
@@ -69,8 +87,11 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
   };
 
   const handleSaveEditExpense = (category: CategoryName, id: string, oldVal: number) => {
-    const parsedVal = parseFloat(editExpenseValue.replace(',', '.'));
-    if (!editExpenseName || isNaN(parsedVal) || parsedVal < 0) return;
+    const parsedVal = parseMoney(editExpenseValue);
+    if (!editExpenseName || parsedVal < 0) {
+      setEditingExpenseId(null);
+      return;
+    }
 
     setBudgetData(prev => {
       const items = prev.expenseItems[category] || [];
@@ -122,7 +143,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
   const saveHeader = () => {
     setBudgetData(prev => ({
       ...prev,
-      income: parseFloat(editIncome.replace(',', '.')) || 0,
+      income: parseMoney(editIncome),
       month: editMonth
     }));
     setIsEditingHeader(false);
@@ -393,7 +414,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                                   type="text"
                                   inputMode="decimal"
                                   defaultValue={item.defaultVal}
-                                  onChange={(e) => setAutoFillInputs(prev => ({...prev, [item.id]: parseFloat(e.target.value.replace(',', '.'))}))}
+                                  onChange={(e) => setAutoFillInputs(prev => ({...prev, [item.id]: parseMoney(e.target.value)}))}
                                   className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded px-2 pl-7 py-1.5 text-xs focus:outline-none focus:border-[#eab308]"
                                 />
                               </div>
