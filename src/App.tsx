@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BudgetData, HistoricalRecord } from './types';
 import { DEFAULT_BUDGET } from './constants';
 import { GoalsTab } from './components/GoalsTab';
 import { ExpensesTab } from './components/ExpensesTab';
 import { HistoryTab } from './components/HistoryTab';
+import { CompoundInterestCalculator } from './components/CompoundInterestCalculator';
+import { CompoundInterestCalculator } from './components/CompoundInterestCalculator';
 import { auth, googleProvider, saveBudgetToFirestore, subscribeToBudget } from './firebase';
 import { signInWithPopup, User } from 'firebase/auth';
-import { LogOut, RotateCcw, Settings, ChevronDown, Save } from 'lucide-react';
+import { LogOut, RotateCcw, Settings, ChevronDown, Save, Calculator, Menu } from 'lucide-react';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -17,6 +19,22 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'orcamento' | 'metas' | 'historico'>('orcamento');
   const [showResetModal, setShowResetModal] = useState(false);
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowOptionsMenu(false);
+      }
+    };
+    if (showOptionsMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showOptionsMenu]);
 
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((u) => {
@@ -124,7 +142,6 @@ export default function App() {
     );
   }
 
-  const userInitial = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
 
   return (
     <div className="min-h-screen bg-[#000000] text-white p-2 sm:p-4 md:p-8 font-sans selection:bg-[#eab308]/30 selection:text-[#eab308]">
@@ -138,39 +155,42 @@ export default function App() {
              </div>
              <h2 className="font-bold text-sm text-white">Meu Orçamento</h2>
            </div>
-           <div className="relative">
+           <div className="relative" ref={menuRef}>
              <button 
                onClick={() => setShowOptionsMenu(!showOptionsMenu)}
-               className="flex items-center gap-2 p-1 pr-2 rounded-full hover:bg-[#1a1a1a] transition-colors border border-transparent hover:border-[#333]"
+               className="p-2 rounded-lg hover:bg-[#1a1a1a] transition-colors border border-transparent hover:border-[#333] flex items-center justify-center text-[#a1a1aa] hover:text-white"
              >
-               <div className="w-8 h-8 rounded-full bg-[#eab308] flex items-center justify-center text-black font-bold text-xs shadow-sm flex-shrink-0" title={user.email || 'Usuário'}>
-                  {userInitial}
-               </div>
-               <ChevronDown className="w-4 h-4 text-[#a1a1aa]" />
+               <Menu className="w-5 h-5" />
              </button>
              
              {showOptionsMenu && (
-               <div className="absolute right-0 top-full mt-2 w-48 bg-[#111111] border border-[#222] rounded-xl shadow-2xl py-2 z-50 overflow-hidden flex flex-col">
+               <div className="absolute right-0 top-full mt-2 w-64 bg-[#111111] border border-[#222] rounded-xl shadow-2xl py-2 z-50 overflow-hidden flex flex-col">
                  <div className="px-4 py-2 border-b border-[#222] mb-1">
                    <p className="text-xs text-[#a1a1aa] truncate">{user.email}</p>
                  </div>
                  <button 
                    onClick={handleSaveCurrentMonth}
-                   className="w-full text-left px-4 py-2 text-sm font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-[#eab308] transition-colors flex items-center gap-2"
+                   className="w-full text-left px-5 py-3 text-base font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-[#eab308] transition-colors flex items-center gap-2"
                  >
-                   <Save className="w-4 h-4" /> Salvar Mês Atual
+                   <Save className="w-5 h-5" /> Salvar Mês Atual
+                 </button>
+                 <button 
+                   onClick={() => { setShowCalculator(true); setShowOptionsMenu(false); }}
+                   className="w-full text-left px-5 py-3 text-base font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-[#eab308] transition-colors flex items-center gap-2"
+                 >
+                   <Calculator className="w-5 h-5" /> Calc. de Juros
                  </button>
                  <button 
                    onClick={() => { setShowResetModal(true); setShowOptionsMenu(false); }}
-                   className="w-full text-left px-4 py-2 text-sm font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-red-400 transition-colors flex items-center gap-2"
+                   className="w-full text-left px-5 py-3 text-base font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-red-400 transition-colors flex items-center gap-2"
                  >
-                   <RotateCcw className="w-4 h-4" /> Resetar App
+                   <RotateCcw className="w-5 h-5" /> Resetar App
                  </button>
                  <button
                    onClick={() => { handleLogout(); setShowOptionsMenu(false); }}
-                   className="w-full text-left px-4 py-2 text-sm font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-white transition-colors flex items-center gap-2"
+                   className="w-full text-left px-5 py-3 text-base font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-white transition-colors flex items-center gap-2"
                  >
-                   <LogOut className="w-4 h-4" /> Sair
+                   <LogOut className="w-5 h-5" /> Sair
                  </button>
                </div>
              )}
@@ -230,6 +250,9 @@ export default function App() {
             </div>
           </div>
         </div>
+      )}
+      {showCalculator && (
+        <CompoundInterestCalculator onClose={() => setShowCalculator(false)} />
       )}
     </div>
   );
