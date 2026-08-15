@@ -1,18 +1,9 @@
-export const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(value);
-};
+import re
 
-export const formatPercentage = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'percent',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value / 100);
-};
+with open('src/utils.ts', 'r') as f:
+    content = f.read()
 
+new_utils = """
 export const formatMoneyMask = (val: string) => {
   const numericValue = val.replace(/\D/g, '');
   if (!numericValue) return '0,00';
@@ -37,3 +28,9 @@ export const parseMoney = (val: string | number) => {
   const result = parseFloat(cleaned);
   return isNaN(result) ? 0 : result;
 };
+"""
+
+content += new_utils
+
+with open('src/utils.ts', 'w') as f:
+    f.write(content)

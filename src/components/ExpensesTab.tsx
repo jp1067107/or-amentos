@@ -3,7 +3,7 @@ import { BudgetData, CategoryName } from '../types';
 import { CATEGORY_INFO } from '../constants';
 import { BudgetChart } from './BudgetChart';
 import { SummaryTable } from './SummaryTable';
-import { formatCurrency } from '../utils';
+import { formatCurrency, formatMoneyMask, parseMoney } from '../utils';
 import { ChevronLeft, Plus, ChevronDown, ChevronUp, Trash2, Edit2, Check } from 'lucide-react';
 
 const parseMoney = (val: string | number): number => {
@@ -38,12 +38,13 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
   
   const [showAutoFill, setShowAutoFill] = useState(false);
   const [autoFillInputs, setAutoFillInputs] = useState<Record<string, number>>({});
+  const [autoFillMasks, setAutoFillMasks] = useState<Record<string, string>>({});
   
   const [newAutoFillName, setNewAutoFillName] = useState('');
   const [newAutoFillValue, setNewAutoFillValue] = useState('');
 
   const [isEditingHeader, setIsEditingHeader] = useState(false);
-  const [editIncome, setEditIncome] = useState(budgetData.income.toString());
+  const [editIncome, setEditIncome] = useState(formatMoneyMask(budgetData.income.toFixed(2)));
   const [editMonth, setEditMonth] = useState(budgetData.month);
 
   const [editingExpenseId, setEditingExpenseId] = useState<string | null>(null);
@@ -175,10 +176,10 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
               <div className="flex items-center border border-[#333] rounded bg-[#222] px-2 focus-within:border-[#eab308] flex-1 sm:w-auto min-w-[100px]">
                 <span className="text-[#a1a1aa] text-sm">R$</span>
                 <input 
-                  type="text" 
-                  inputMode="decimal"
+                  type="tel" 
+                  inputMode="numeric"
                   value={editIncome} 
-                  onChange={e => setEditIncome(e.target.value)}
+                  onChange={e => setEditIncome(formatMoneyMask(e.target.value))}
                   className="w-full sm:w-24 px-2 py-1 text-sm bg-transparent text-white focus:outline-none"
                   placeholder="Renda"
                 />
@@ -282,10 +283,10 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                                 className="flex-1 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-sm focus:outline-none focus:border-[#eab308]"
                               />
                               <input 
-                                type="text"
-                                inputMode="decimal"
+                                type="tel"
+                                inputMode="numeric"
                                 value={editExpenseValue}
-                                onChange={e => setEditExpenseValue(e.target.value)}
+                                onChange={e => setEditExpenseValue(formatMoneyMask(e.target.value))}
                                 className="w-24 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-sm focus:outline-none focus:border-[#eab308]"
                               />
                               <button 
@@ -345,11 +346,11 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                       <div className="w-32 relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] text-[10px]">R$</span>
                         <input 
-                          type="text"
-                          inputMode="decimal"
+                          type="tel"
+                          inputMode="numeric"
                           placeholder="0,00"
                           value={newValue}
-                          onChange={e => setNewValue(e.target.value)}
+                          onChange={e => setNewValue(formatMoneyMask(e.target.value))}
                           className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded-lg px-2 pl-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#eab308]/50 focus:border-[#eab308]"
                         />
                       </div>
@@ -411,10 +412,14 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                               <div className="flex-1 min-w-[100px] relative">
                                 <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#71717a] text-[10px]">R$</span>
                                 <input 
-                                  type="text"
-                                  inputMode="decimal"
-                                  defaultValue={item.defaultVal}
-                                  onChange={(e) => setAutoFillInputs(prev => ({...prev, [item.id]: parseMoney(e.target.value)}))}
+                                  type="tel"
+                                  inputMode="numeric"
+                                  value={autoFillMasks[item.id] !== undefined ? autoFillMasks[item.id] : formatMoneyMask(item.defaultVal.toFixed(2))}
+                                  onChange={(e) => {
+                                    const masked = formatMoneyMask(e.target.value);
+                                    setAutoFillMasks(prev => ({...prev, [item.id]: masked}));
+                                    setAutoFillInputs(prev => ({...prev, [item.id]: parseMoney(masked)}));
+                                  }}
                                   className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded px-2 pl-7 py-1.5 text-xs focus:outline-none focus:border-[#eab308]"
                                 />
                               </div>
@@ -448,11 +453,11 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                             className="w-full sm:flex-1 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-xs focus:outline-none focus:border-[#eab308]"
                           />
                           <input 
-                            type="text"
-                            inputMode="decimal"
+                            type="tel"
+                            inputMode="numeric"
                             placeholder="Valor"
                             value={newAutoFillValue}
-                            onChange={e => setNewAutoFillValue(e.target.value)}
+                            onChange={e => setNewAutoFillValue(formatMoneyMask(e.target.value))}
                             className="flex-1 sm:w-24 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-xs focus:outline-none focus:border-[#eab308]"
                           />
                           <button 

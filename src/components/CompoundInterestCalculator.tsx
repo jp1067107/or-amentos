@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { formatCurrency } from '../utils';
+import { formatCurrency, formatMoneyMask, parseMoney } from '../utils';
 import { X, Calculator } from 'lucide-react';
 
 interface CalculatorProps {
@@ -32,13 +32,6 @@ export const CompoundInterestCalculator: React.FC<CalculatorProps> = ({ onClose 
     return isNaN(result) ? 0 : result;
   };
 
-
-  const formatMoneyMask = (val: string) => {
-    const numericValue = val.replace(/\D/g, '');
-    if (!numericValue) return '0,00';
-    const amount = parseInt(numericValue, 10) / 100;
-    return amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
   const results = useMemo(() => {
     const p = parseMoney(initialAmount);
     const pmt = parseMoney(monthlyAmount);
@@ -118,8 +111,8 @@ export const CompoundInterestCalculator: React.FC<CalculatorProps> = ({ onClose 
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] text-sm">R$</span>
                 <input 
-                  type="text"
-                  inputMode="decimal"
+                  type="tel"
+                  inputMode="numeric"
                   value={initialAmount}
                   onChange={e => setInitialAmount(formatMoneyMask(e.target.value))}
                   className="w-full bg-[#0a0a0a] text-white border border-[#333] rounded-lg px-3 pl-10 py-2.5 focus:outline-none focus:border-[#eab308] transition-colors"
@@ -132,8 +125,8 @@ export const CompoundInterestCalculator: React.FC<CalculatorProps> = ({ onClose 
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] text-sm">R$</span>
                 <input 
-                  type="text"
-                  inputMode="decimal"
+                  type="tel"
+                  inputMode="numeric"
                   value={monthlyAmount}
                   onChange={e => setMonthlyAmount(formatMoneyMask(e.target.value))}
                   className="w-full bg-[#0a0a0a] text-white border border-[#333] rounded-lg px-3 pl-10 py-2.5 focus:outline-none focus:border-[#eab308] transition-colors"
@@ -147,8 +140,8 @@ export const CompoundInterestCalculator: React.FC<CalculatorProps> = ({ onClose 
                 <div className="relative">
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#71717a] text-sm">%</span>
                   <input 
-                    type="text"
-                    inputMode="decimal"
+                    type="tel"
+                    inputMode="numeric"
                     value={interestRate}
                     onChange={e => setInterestRate(formatMoneyMask(e.target.value))}
                     className="w-full bg-[#0a0a0a] text-white border border-[#333] rounded-lg px-3 pr-8 py-2.5 focus:outline-none focus:border-[#eab308] transition-colors"
@@ -172,7 +165,7 @@ export const CompoundInterestCalculator: React.FC<CalculatorProps> = ({ onClose 
               <div>
                 <label className="block text-sm font-bold text-gray-300 mb-1">Período</label>
                 <input 
-                  type="text"
+                  type="tel"
                   inputMode="numeric"
                   value={period}
                   onChange={e => setPeriod(e.target.value)}
