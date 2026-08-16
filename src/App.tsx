@@ -5,7 +5,6 @@ import { GoalsTab } from './components/GoalsTab';
 import { ExpensesTab } from './components/ExpensesTab';
 import { HistoryTab } from './components/HistoryTab';
 import { CompoundInterestCalculator } from './components/CompoundInterestCalculator';
-import { CompoundInterestCalculator } from './components/CompoundInterestCalculator';
 import { auth, googleProvider, saveBudgetToFirestore, subscribeToBudget } from './firebase';
 import { signInWithPopup, User } from 'firebase/auth';
 import { LogOut, RotateCcw, Settings, ChevronDown, Save, Calculator, Menu } from 'lucide-react';

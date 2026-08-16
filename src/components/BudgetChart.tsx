@@ -18,7 +18,7 @@ export const BudgetChart: React.FC<BudgetChartProps> = ({ data }) => {
   const totalGasto = Object.values(data.expenses).reduce((acc, val) => (acc as number) + (val as number), 0) as number;
 
   return (
-    <div className="flex flex-col h-full bg-[#111111] rounded-xl p-6 border border-[#222] shadow-sm">
+    <div className="flex flex-col h-full">
       <h3 className="text-white text-sm font-bold mb-4">Gastos por Categoria</h3>
       <div className="flex-1 relative flex flex-col">
         {chartData.length > 0 ? (

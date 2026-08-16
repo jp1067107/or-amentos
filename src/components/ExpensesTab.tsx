@@ -6,24 +6,6 @@ import { SummaryTable } from './SummaryTable';
 import { formatCurrency, formatMoneyMask, parseMoney } from '../utils';
 import { ChevronLeft, Plus, ChevronDown, ChevronUp, Trash2, Edit2, Check } from 'lucide-react';
 
-const parseMoney = (val: string | number): number => {
-  if (typeof val === 'number') return val;
-  if (!val) return 0;
-  let cleaned = val.replace(/[^\d.,]/g, '');
-  if (cleaned.includes(',') && cleaned.includes('.')) {
-    const lastComma = cleaned.lastIndexOf(',');
-    const lastDot = cleaned.lastIndexOf('.');
-    if (lastComma > lastDot) {
-      cleaned = cleaned.replace(/\./g, '').replace(',', '.');
-    } else {
-      cleaned = cleaned.replace(/,/g, '');
-    }
-  } else if (cleaned.includes(',')) {
-    cleaned = cleaned.replace(',', '.');
-  }
-  const result = parseFloat(cleaned);
-  return isNaN(result) ? 0 : result;
-};
 
 interface ExpensesTabProps {
   budgetData: BudgetData;
@@ -222,26 +204,54 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
         <div className="lg:col-span-4 flex flex-col h-full bg-[#111111] rounded-xl border border-[#222] shadow-sm overflow-hidden">
           {!selectedCategory ? (
             <div className="p-6">
-              <h3 className="text-white text-sm font-bold mb-4">Gastos</h3>
+              
               
               <div className="mb-8">
                 <BudgetChart data={budgetData} />
               </div>
 
-              <div className="space-y-1">
-                {CATEGORY_INFO.map(info => (
-                  <button 
-                    key={info.name}
-                    onClick={() => setSelectedCategory(info.name)}
-                    className="w-full flex items-center justify-between p-3 hover:bg-[#1a1a1a] rounded-lg transition-colors group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: info.color }} />
-                      <span className="text-gray-200 text-sm font-semibold">{info.name}</span>
-                    </div>
-                    <ChevronLeft className="w-4 h-4 text-[#71717a] opacity-0 group-hover:opacity-100 transform rotate-180 transition-all group-hover:text-white" />
-                  </button>
-                ))}
+              <div className="space-y-2">
+                {CATEGORY_INFO.map(info => {
+                  const spent = budgetData.expenses[info.name] || 0;
+                  const goalPercent = budgetData.goals[info.name] || 0;
+                  const target = (budgetData.income * goalPercent) / 100;
+                  const percentSpent = target > 0 ? Math.min((spent / target) * 100, 100) : 0;
+                  const isOver = spent > target && target > 0;
+
+                  return (
+                    <button 
+                      key={info.name}
+                      onClick={() => setSelectedCategory(info.name)}
+                      className="w-full text-left p-3 hover:bg-[#1a1a1a] rounded-lg transition-colors group border border-transparent hover:border-[#333]"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: info.color }} />
+                          <span className="text-gray-200 text-sm font-bold">{info.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs font-bold ${isOver ? 'text-red-400' : 'text-gray-300'}`}>
+                            {formatCurrency(spent)}
+                          </span>
+                          <ChevronLeft className="w-4 h-4 text-[#71717a] opacity-0 group-hover:opacity-100 transform rotate-180 transition-all group-hover:text-white" />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] text-[#71717a] mb-1 font-medium">
+                        <span>Progresso</span>
+                        <span>Meta: {formatCurrency(target)}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-[#222] rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-500 ${isOver ? 'bg-red-500' : ''}`}
+                          style={{ 
+                            width: `${percentSpent}%`, 
+                            backgroundColor: isOver ? undefined : info.color 
+                          }}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ) : (

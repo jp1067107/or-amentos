@@ -184,6 +184,18 @@ export const CompoundInterestCalculator: React.FC<CalculatorProps> = ({ onClose 
                 </select>
               </div>
             </div>
+            
+            <button 
+              onClick={() => {
+                setInitialAmount('0,00');
+                setMonthlyAmount('0,00');
+                setInterestRate('0,00');
+                setPeriod('0');
+              }}
+              className="w-full mt-4 py-2 text-sm font-bold text-[#a1a1aa] hover:text-white border border-[#333] rounded-lg hover:bg-[#1a1a1a] transition-colors"
+            >
+              Zerar Valores
+            </button>
           </div>
         </div>
 
