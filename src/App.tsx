@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import isEqual from 'lodash/isEqual';
 import { BudgetData, HistoricalRecord } from './types';
 import { DEFAULT_BUDGET } from './constants';
 import { GoalsTab } from './components/GoalsTab';
@@ -43,12 +44,16 @@ export default function App() {
     return () => unsub();
   }, []);
 
+  // Use a ref to store the last data we received or sent to Firestore
+  const lastSyncData = useRef<BudgetData | null>(null);
+
   useEffect(() => {
     if (user) {
       const unsubscribe = subscribeToBudget(user.uid, (data) => {
         if (data) {
           setBudgetData(prev => {
-            if (JSON.stringify(prev) === JSON.stringify(data)) return prev;
+            if (isEqual(prev, data)) return prev;
+            lastSyncData.current = data; // Keep track of what we just received
             return data;
           });
         }
@@ -58,12 +63,17 @@ export default function App() {
     } else {
       setDataLoaded(false);
       setBudgetData(DEFAULT_BUDGET);
+      lastSyncData.current = null;
     }
   }, [user]);
 
   useEffect(() => {
     if (user && dataLoaded) {
-      saveBudgetToFirestore(user.uid, budgetData);
+      // Only save if the data has actually changed from what we last synced
+      if (!isEqual(lastSyncData.current, budgetData)) {
+        lastSyncData.current = budgetData;
+        saveBudgetToFirestore(user.uid, budgetData);
+      }
     }
   }, [budgetData, user, dataLoaded]);
 

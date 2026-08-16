@@ -12,6 +12,27 @@ interface ExpensesTabProps {
   setBudgetData: React.Dispatch<React.SetStateAction<BudgetData>>;
 }
 
+const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+const monthToInputFormat = (monthStr: string) => {
+  if (!monthStr) return '';
+  const parts = monthStr.split('/');
+  if (parts.length !== 2) return '';
+  const [mStr, yStr] = parts;
+  const mIndex = MONTHS.findIndex(m => m.toLowerCase() === mStr.trim().toLowerCase());
+  if (mIndex === -1) return '';
+  const mm = (mIndex + 1).toString().padStart(2, '0');
+  return `${yStr.trim()}-${mm}`;
+};
+
+const inputFormatToMonth = (inputStr: string) => {
+  if (!inputStr) return '';
+  const [yStr, mStr] = inputStr.split('-');
+  if (!yStr || !mStr) return '';
+  const monthName = MONTHS[parseInt(mStr, 10) - 1];
+  return `${monthName}/${yStr}`;
+};
+
 export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetData }) => {
   const [selectedCategory, setSelectedCategory] = useState<CategoryName | null>(null);
   
@@ -149,10 +170,10 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
           {isEditingHeader ? (
             <div className="flex flex-wrap items-center gap-2 bg-[#111111] p-2 rounded-lg border border-[#333] shadow-sm z-10 w-full sm:w-auto">
               <input 
-                type="text" 
-                value={editMonth} 
-                onChange={e => setEditMonth(e.target.value)}
-                className="flex-1 sm:w-32 min-w-[80px] px-2 py-1 text-sm bg-[#222] text-white border border-[#333] rounded focus:outline-none focus:border-[#eab308]"
+                type="month" 
+                value={monthToInputFormat(editMonth)} 
+                onChange={e => setEditMonth(inputFormatToMonth(e.target.value) || e.target.value)}
+                className="flex-1 sm:w-32 min-w-[120px] px-2 py-1 text-sm bg-[#222] text-white border border-[#333] rounded focus:outline-none focus:border-[#eab308] appearance-none"
                 placeholder="Mês"
               />
               <div className="flex items-center border border-[#333] rounded bg-[#222] px-2 focus-within:border-[#eab308] flex-1 sm:w-auto min-w-[100px]">
