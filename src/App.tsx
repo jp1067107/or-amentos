@@ -5,9 +5,11 @@ import { GoalsTab } from './components/GoalsTab';
 import { ExpensesTab } from './components/ExpensesTab';
 import { HistoryTab } from './components/HistoryTab';
 import { CompoundInterestCalculator } from './components/CompoundInterestCalculator';
+import { IncomeSimulator } from './components/IncomeSimulator';
+import { TutorialModal } from './components/TutorialModal';
 import { auth, googleProvider, saveBudgetToFirestore, subscribeToBudget } from './firebase';
 import { signInWithPopup, User } from 'firebase/auth';
-import { LogOut, RotateCcw, Settings, ChevronDown, Save, Calculator, Menu } from 'lucide-react';
+import { LogOut, RotateCcw, Settings, ChevronDown, Save, Calculator, Menu, HelpCircle, TrendingDown } from 'lucide-react';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -19,6 +21,8 @@ export default function App() {
   const [showResetModal, setShowResetModal] = useState(false);
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
+  const [showSimulator, setShowSimulator] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -196,6 +200,18 @@ export default function App() {
                    <Calculator className="w-5 h-5" /> Calc. de Juros
                  </button>
                  <button 
+                   onClick={() => { setShowSimulator(true); setShowOptionsMenu(false); }}
+                   className="w-full text-left px-5 py-3 text-base font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-red-500 transition-colors flex items-center gap-2"
+                 >
+                   <TrendingDown className="w-5 h-5" /> Simulador de Renda
+                 </button>
+                 <button 
+                   onClick={() => { setShowTutorial(true); setShowOptionsMenu(false); }}
+                   className="w-full text-left px-5 py-3 text-base font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-[#3b82f6] transition-colors flex items-center gap-2"
+                 >
+                   <HelpCircle className="w-5 h-5" /> Tutorial Rápido
+                 </button>
+                 <button 
                    onClick={() => { setShowResetModal(true); setShowOptionsMenu(false); }}
                    className="w-full text-left px-5 py-3 text-base font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-red-400 transition-colors flex items-center gap-2"
                  >
@@ -268,6 +284,12 @@ export default function App() {
       )}
       {showCalculator && (
         <CompoundInterestCalculator onClose={() => setShowCalculator(false)} />
+      )}
+      {showSimulator && (
+        <IncomeSimulator onClose={() => setShowSimulator(false)} />
+      )}
+      {showTutorial && (
+        <TutorialModal onClose={() => setShowTutorial(false)} />
       )}
     </div>
   );
