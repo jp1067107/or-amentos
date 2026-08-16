@@ -5,7 +5,7 @@ import firebaseConfig from '../firebase-applet-config.json';
 import { BudgetData } from './types';
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const db = firebaseConfig.firestoreDatabaseId ? getFirestore(app, firebaseConfig.firestoreDatabaseId) : getFirestore(app);
 
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();

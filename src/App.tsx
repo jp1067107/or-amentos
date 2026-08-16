@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import isEqual from 'lodash/isEqual';
 import { BudgetData, HistoricalRecord } from './types';
 import { DEFAULT_BUDGET } from './constants';
 import { GoalsTab } from './components/GoalsTab';
@@ -44,18 +43,20 @@ export default function App() {
     return () => unsub();
   }, []);
 
-  // Use a ref to store the last data we received or sent to Firestore
-  const lastSyncData = useRef<BudgetData | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const lastSyncStr = useRef<string>('');
 
   useEffect(() => {
     if (user) {
       const unsubscribe = subscribeToBudget(user.uid, (data) => {
         if (data) {
-          setBudgetData(prev => {
-            if (isEqual(prev, data)) return prev;
-            lastSyncData.current = data; // Keep track of what we just received
-            return data;
-          });
+          lastSyncStr.current = JSON.stringify(data);
+          setBudgetData(data);
+        } else {
+          // If no data exists, we start with DEFAULT_BUDGET but we DO NOT set lastSyncStr yet
+          // so it triggers a save of the default budget.
+          setBudgetData(DEFAULT_BUDGET);
+          lastSyncStr.current = ''; 
         }
         setDataLoaded(true);
       });
@@ -63,16 +64,21 @@ export default function App() {
     } else {
       setDataLoaded(false);
       setBudgetData(DEFAULT_BUDGET);
-      lastSyncData.current = null;
+      lastSyncStr.current = '';
     }
   }, [user]);
 
   useEffect(() => {
     if (user && dataLoaded) {
-      // Only save if the data has actually changed from what we last synced
-      if (!isEqual(lastSyncData.current, budgetData)) {
-        lastSyncData.current = budgetData;
-        saveBudgetToFirestore(user.uid, budgetData);
+      const currentStr = JSON.stringify(budgetData);
+      if (lastSyncStr.current !== currentStr) {
+        lastSyncStr.current = currentStr;
+        
+        // Use a small timeout to debounce rapid saves
+        const timer = setTimeout(() => {
+          saveBudgetToFirestore(user.uid, budgetData);
+        }, 500);
+        return () => clearTimeout(timer);
       }
     }
   }, [budgetData, user, dataLoaded]);

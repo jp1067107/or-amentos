@@ -48,7 +48,7 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({ budgetData, setBudgetDat
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {history.sort((a, b) => b.timestamp - a.timestamp).map(record => {
+          {[...history].sort((a, b) => b.timestamp - a.timestamp).map(record => {
             const totalExpenses = Object.values(record.expenses).reduce((acc, val) => (acc as number) + (val as number), 0) as number;
             const saldo = getSaldo(record.income, totalExpenses);
 
