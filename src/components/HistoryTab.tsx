@@ -82,15 +82,15 @@ export const HistoryTab: React.FC<HistoryTabProps> = ({ budgetData, setBudgetDat
                 <div className="space-y-3 bg-[#0a0a0a] p-3 rounded-lg border border-[#222]">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-[#a1a1aa]">Renda:</span>
-                    <span className="text-white font-medium">{formatCurrency(record.income)}</span>
+                    <span className="text-emerald-400 font-medium">{formatCurrency(record.income)}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-[#a1a1aa]">Despesas:</span>
-                    <span className="text-[#eab308] font-medium">{formatCurrency(totalExpenses)}</span>
+                    <span className="text-red-400 font-medium">{formatCurrency(totalExpenses)}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm pt-2 border-t border-[#222]">
                     <span className="text-[#a1a1aa]">Saldo:</span>
-                    <span className={`font-bold ${saldo >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    <span className={`font-bold ${saldo >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                       {saldo >= 0 ? '+' : ''}{formatCurrency(saldo)}
                     </span>
                   </div>

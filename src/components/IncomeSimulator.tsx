@@ -70,13 +70,13 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 overflow-y-auto">
-      <div className="min-h-screen p-4 md:p-8 flex items-center justify-center">
-        <div className="bg-[#0a0a0a] border border-[#222] rounded-xl w-full max-w-4xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+      <div className="min-h-screen p-0 sm:p-4 md:p-8 flex items-center justify-center">
+        <div className="bg-[#0a0a0a] sm:border border-[#222] sm:rounded-xl w-full h-full sm:h-auto min-h-screen sm:min-h-0 max-w-4xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300">
           
-          <div className="flex justify-between items-center p-6 border-b border-[#222] bg-[#111111]">
+          <div className="flex justify-between items-center p-4 sm:p-6 border-b border-[#222] bg-[#111111] sticky top-0 z-10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">
-                <TrendingDown className="w-5 h-5 text-red-500" />
+              <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                <TrendingDown className="w-5 h-5 text-emerald-500" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white">Simulador de Renda</h2>
@@ -88,13 +88,13 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
             </button>
           </div>
 
-          <div className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
             {/* Form */}
             <div className="lg:col-span-5 space-y-5">
               <div className="space-y-4 bg-[#111] p-5 rounded-xl border border-[#222]">
                 <div>
                   <label className="block text-sm font-medium text-[#a1a1aa] mb-1.5">Valor inicial</label>
-                  <div className="flex items-center border border-[#333] rounded-lg bg-[#0a0a0a] px-3 focus-within:border-red-500 transition-colors">
+                  <div className="flex items-center border border-[#333] rounded-lg bg-[#0a0a0a] px-3 focus-within:border-emerald-500 transition-colors">
                     <span className="text-[#a1a1aa]">R$</span>
                     <input 
                       type="text" 
@@ -107,7 +107,7 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
 
                 <div>
                   <label className="block text-sm font-medium text-[#a1a1aa] mb-1.5">Valor de retirada mensal</label>
-                  <div className="flex items-center border border-[#333] rounded-lg bg-[#0a0a0a] px-3 focus-within:border-red-500 transition-colors">
+                  <div className="flex items-center border border-[#333] rounded-lg bg-[#0a0a0a] px-3 focus-within:border-emerald-500 transition-colors">
                     <span className="text-[#a1a1aa]">R$</span>
                     <input 
                       type="text" 
@@ -118,10 +118,10 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-[#a1a1aa] mb-1.5">Taxa de juros</label>
-                    <div className="flex border border-[#333] rounded-lg bg-[#0a0a0a] overflow-hidden focus-within:border-red-500 transition-colors">
+                    <div className="flex border border-[#333] rounded-lg bg-[#0a0a0a] overflow-hidden focus-within:border-emerald-500 transition-colors">
                       <div className="flex items-center pl-3">
                         <span className="text-[#a1a1aa]">%</span>
                       </div>
@@ -144,7 +144,7 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
 
                   <div>
                     <label className="block text-sm font-medium text-[#a1a1aa] mb-1.5">Tempo</label>
-                    <div className="flex border border-[#333] rounded-lg bg-[#0a0a0a] overflow-hidden focus-within:border-red-500 transition-colors">
+                    <div className="flex border border-[#333] rounded-lg bg-[#0a0a0a] overflow-hidden focus-within:border-emerald-500 transition-colors">
                       <input 
                         type="text" 
                         value={period}
@@ -165,7 +165,7 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
               </div>
 
               <div className="flex items-center justify-between px-2">
-                 <button className="text-sm text-red-500 hover:text-red-400 font-medium transition-colors">
+                 <button className="text-sm text-emerald-500 hover:text-emerald-400 font-medium transition-colors">
                    Simular aportes mensais
                  </button>
                  <button onClick={handleClear} className="text-sm text-[#71717a] hover:text-white transition-colors">
@@ -179,21 +179,21 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
               <h3 className="text-xl font-bold text-white mb-4">Resultado</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div className="bg-[#8b1515] p-5 rounded-xl border border-red-900 shadow-sm flex flex-col items-center justify-center text-center">
-                  <span className="text-red-100 text-xs font-bold uppercase tracking-wider mb-2">Valor total final</span>
-                  <span className="text-white text-2xl font-bold">{formatCurrency(results.finalBalance)}</span>
+                <div className="bg-emerald-900/40 p-5 rounded-xl border border-emerald-800 shadow-sm flex flex-col items-center justify-center text-center">
+                  <span className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-2">Valor total final</span>
+                  <span className="text-emerald-400 text-2xl font-bold">{formatCurrency(results.finalBalance)}</span>
                 </div>
                 <div className="bg-[#111111] p-5 rounded-xl border border-[#222] shadow-sm flex flex-col items-center justify-center text-center">
                   <span className="text-[#a1a1aa] text-xs font-bold uppercase tracking-wider mb-2">Valor total retirado</span>
-                  <span className="text-[#eab308] text-2xl font-bold">{formatCurrency(results.totalWithdrawn)}</span>
+                  <span className="text-red-400 text-2xl font-bold">{formatCurrency(results.totalWithdrawn)}</span>
                 </div>
                 <div className="bg-[#111111] p-5 rounded-xl border border-[#222] shadow-sm flex flex-col items-center justify-center text-center">
                   <span className="text-[#a1a1aa] text-xs font-bold uppercase tracking-wider mb-2">Total em juros</span>
-                  <span className="text-green-400 text-2xl font-bold">{formatCurrency(results.totalInterest)}</span>
+                  <span className="text-emerald-400 text-2xl font-bold">{formatCurrency(results.totalInterest)}</span>
                 </div>
               </div>
 
-              <div className="flex-1 min-h-[300px] bg-[#111] border border-[#222] rounded-xl p-4 md:p-6 flex flex-col">
+              <div className="flex-1 min-h-[250px] sm:min-h-[300px] bg-[#111] border border-[#222] rounded-xl p-4 md:p-6 flex flex-col">
                 <h4 className="text-sm font-bold text-white mb-6 text-center">Gráfico da Evolução do Saldo</h4>
                 <div className="flex-1 w-full">
                   <ResponsiveContainer width="100%" height="100%">
@@ -232,7 +232,7 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
                         type="monotone" 
                         dataKey="jurosAcumulados" 
                         name="Total em juros" 
-                        stroke="#8b1515" 
+                        stroke="#34d399" 
                         strokeWidth={3}
                         dot={false}
                       />

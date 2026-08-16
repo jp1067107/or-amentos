@@ -47,7 +47,7 @@ export const BudgetChart: React.FC<BudgetChartProps> = ({ data }) => {
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="text-white text-xl font-bold">{formatCurrency(totalGasto as number)}</span>
+              <span className="text-red-400 text-xl font-bold">{formatCurrency(totalGasto as number)}</span>
             </div>
           </div>
         ) : (

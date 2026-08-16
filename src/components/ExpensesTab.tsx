@@ -173,10 +173,10 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                 type="month" 
                 value={monthToInputFormat(editMonth)} 
                 onChange={e => setEditMonth(inputFormatToMonth(e.target.value) || e.target.value)}
-                className="flex-1 sm:w-32 min-w-[120px] px-2 py-1 text-sm bg-[#222] text-white border border-[#333] rounded focus:outline-none focus:border-[#eab308] appearance-none"
+                className="flex-1 sm:w-32 min-w-[120px] px-2 py-1 text-sm bg-[#222] text-white border border-[#333] rounded focus:outline-none focus:border-emerald-500 appearance-none"
                 placeholder="Mês"
               />
-              <div className="flex items-center border border-[#333] rounded bg-[#222] px-2 focus-within:border-[#eab308] flex-1 sm:w-auto min-w-[100px]">
+              <div className="flex items-center border border-[#333] rounded bg-[#222] px-2 focus-within:border-emerald-500 flex-1 sm:w-auto min-w-[100px]">
                 <span className="text-[#a1a1aa] text-sm">R$</span>
                 <input 
                   type="tel" 
@@ -187,7 +187,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                   placeholder="Renda"
                 />
               </div>
-              <button onClick={saveHeader} className="p-1.5 bg-[#eab308] text-black rounded hover:bg-[#ca9a04] flex-shrink-0">
+              <button onClick={saveHeader} className="p-1.5 bg-emerald-500 text-black rounded hover:bg-emerald-600 flex-shrink-0">
                 <Check className="w-4 h-4" />
               </button>
             </div>
@@ -199,14 +199,14 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                   setEditMonth(budgetData.month);
                   setIsEditingHeader(true);
                 }}
-                className="absolute -top-2 -right-2 p-1.5 bg-[#222] border border-[#333] rounded-full shadow-sm text-[#a1a1aa] hover:text-[#eab308] opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-10"
+                className="absolute -top-2 -right-2 p-1.5 bg-[#222] border border-[#333] rounded-full shadow-sm text-[#a1a1aa] hover:text-emerald-400 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-10"
                 title="Editar Mês/Renda"
               >
                 <Edit2 className="w-3.5 h-3.5" />
               </button>
               <div className="flex gap-4 w-full sm:w-auto">
                 <div className="bg-[#111111] border border-[#222] rounded-lg px-4 py-2 flex items-center justify-center flex-1 sm:flex-none sm:min-w-[120px]">
-                  <span className="text-[#eab308] text-sm font-bold">{budgetData.month}</span>
+                  <span className="text-white text-sm font-bold">{budgetData.month}</span>
                 </div>
                 
                 <div className="flex flex-col items-start sm:items-end flex-1 sm:flex-none">
@@ -311,14 +311,14 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                                 type="text"
                                 value={editExpenseName}
                                 onChange={e => setEditExpenseName(e.target.value)}
-                                className="flex-1 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-sm focus:outline-none focus:border-[#eab308]"
+                                className="flex-1 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-sm focus:outline-none focus:border-emerald-500"
                               />
                               <input 
                                 type="tel"
                                 inputMode="numeric"
                                 value={editExpenseValue}
                                 onChange={e => setEditExpenseValue(formatMoneyMask(e.target.value))}
-                                className="w-24 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-sm focus:outline-none focus:border-[#eab308]"
+                                className="w-24 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-sm focus:outline-none focus:border-emerald-500"
                               />
                               <button 
                                 onClick={() => handleSaveEditExpense(selectedCategory, exp.id, exp.value)}
@@ -339,7 +339,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                                       setEditExpenseName(exp.name);
                                       setEditExpenseValue(exp.value.toString());
                                     }}
-                                    className="text-[#555] hover:text-[#eab308] transition-colors p-1"
+                                    className="text-[#555] hover:text-emerald-400 transition-colors p-1"
                                     title="Editar"
                                   >
                                     <Edit2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
@@ -371,7 +371,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                           placeholder="Ex: Conta de Luz"
                           value={newName}
                           onChange={e => setNewName(e.target.value)}
-                          className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#eab308]/50 focus:border-[#eab308]"
+                          className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#eab308]/50 focus:border-emerald-500"
                         />
                       </div>
                       <div className="w-32 relative">
@@ -382,7 +382,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                           placeholder="0,00"
                           value={newValue}
                           onChange={e => setNewValue(formatMoneyMask(e.target.value))}
-                          className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded-lg px-2 pl-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#eab308]/50 focus:border-[#eab308]"
+                          className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded-lg px-2 pl-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#eab308]/50 focus:border-emerald-500"
                         />
                       </div>
                     </div>
@@ -451,12 +451,12 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                                     setAutoFillMasks(prev => ({...prev, [item.id]: masked}));
                                     setAutoFillInputs(prev => ({...prev, [item.id]: parseMoney(masked)}));
                                   }}
-                                  className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded px-2 pl-7 py-1.5 text-xs focus:outline-none focus:border-[#eab308]"
+                                  className="w-full bg-[#0a0a0a] text-white border border-[#222] rounded px-2 pl-7 py-1.5 text-xs focus:outline-none focus:border-emerald-500"
                                 />
                               </div>
                               <button 
                                 onClick={() => handleAddExpense(selectedCategory, item.name, autoFillInputs[item.id] || item.defaultVal)}
-                                className="w-8 h-8 sm:w-7 sm:h-7 rounded-full bg-[#222] hover:bg-[#eab308]/20 hover:text-[#eab308] flex items-center justify-center text-[#a1a1aa] transition-colors flex-shrink-0"
+                                className="w-8 h-8 sm:w-7 sm:h-7 rounded-full bg-[#222] hover:bg-[#eab308]/20 hover:text-emerald-400 flex items-center justify-center text-[#a1a1aa] transition-colors flex-shrink-0"
                                 title="Lançar"
                               >
                                 <Plus className="w-4 h-4" />
@@ -481,7 +481,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                             placeholder="Nome"
                             value={newAutoFillName}
                             onChange={e => setNewAutoFillName(e.target.value)}
-                            className="w-full sm:flex-1 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-xs focus:outline-none focus:border-[#eab308]"
+                            className="w-full sm:flex-1 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-xs focus:outline-none focus:border-emerald-500"
                           />
                           <input 
                             type="tel"
@@ -489,7 +489,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({ budgetData, setBudgetD
                             placeholder="Valor"
                             value={newAutoFillValue}
                             onChange={e => setNewAutoFillValue(formatMoneyMask(e.target.value))}
-                            className="flex-1 sm:w-24 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-xs focus:outline-none focus:border-[#eab308]"
+                            className="flex-1 sm:w-24 bg-[#0a0a0a] text-white border border-[#222] rounded px-2 py-1.5 text-xs focus:outline-none focus:border-emerald-500"
                           />
                           <button 
                             onClick={() => handleAddAutoFillItem(selectedCategory)}

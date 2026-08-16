@@ -77,7 +77,7 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data }) => {
                             (data.expenseItems[info.name] || []).map(item => (
                               <div key={item.id} className="flex justify-between items-center text-xs py-1 border-b border-[#222] last:border-0">
                                 <span className="text-[#a1a1aa] truncate mr-2 flex-1">{item.name}</span>
-                                <span className="text-gray-300 font-medium">{formatCurrency(item.value)}</span>
+                                <span className="text-red-400 font-medium">{formatCurrency(item.value)}</span>
                               </div>
                             ))
                           )}
@@ -100,11 +100,11 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ data }) => {
         </div>
         <div className="flex flex-col md:items-center">
           <div className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#71717a] mb-1">Total a gastar</div>
-          <div className="text-white text-base sm:text-lg font-bold">{formatCurrency(totalAGastar as number)}</div>
+          <div className="text-emerald-400 text-base sm:text-lg font-bold">{formatCurrency(totalAGastar as number)}</div>
         </div>
         <div className="flex flex-col col-span-2 md:col-span-1 items-start md:items-end bg-[#111] md:bg-transparent p-3 md:p-0 rounded-lg md:rounded-none border border-[#222] md:border-none">
           <div className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-[#71717a] mb-1">Utilizado</div>
-          <div className="text-[#eab308] text-lg sm:text-xl font-bold">{utilizedPercentage.toFixed(0)}%</div>
+          <div className={`text-lg sm:text-xl font-bold ${utilizedPercentage > 100 ? "text-red-500" : "text-emerald-400"}`}>{utilizedPercentage.toFixed(0)}%</div>
         </div>
       </div>
     </div>
