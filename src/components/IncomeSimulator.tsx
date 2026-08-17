@@ -70,8 +70,8 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 overflow-y-auto">
-      <div className="min-h-screen p-0 sm:p-4 md:p-8 flex items-center justify-center">
-        <div className="bg-[#0a0a0a] sm:border border-[#222] sm:rounded-xl w-full h-full sm:h-auto min-h-screen sm:min-h-0 max-w-4xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+      <div className="min-h-screen p-0 sm:p-4 md:p-8 flex sm:items-start lg:items-center justify-center">
+        <div className="bg-[#0a0a0a] sm:border border-[#222] sm:rounded-xl w-full h-full sm:h-auto min-h-screen sm:min-h-0 max-w-5xl xl:max-w-6xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300">
           
           <div className="flex justify-between items-center p-4 sm:p-6 border-b border-[#222] bg-[#111111] sticky top-0 z-10">
             <div className="flex items-center gap-3">
@@ -90,8 +90,8 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
 
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
             {/* Form */}
-            <div className="lg:col-span-5 space-y-5">
-              <div className="space-y-4 bg-[#111] p-5 rounded-xl border border-[#222]">
+            <div className="lg:col-span-4 xl:col-span-4 space-y-5">
+              <div className="space-y-4 bg-[#111] p-4 xl:p-5 rounded-xl border border-[#222]">
                 <div>
                   <label className="block text-sm font-medium text-[#a1a1aa] mb-1.5">Valor inicial</label>
                   <div className="flex items-center border border-[#333] rounded-lg bg-[#0a0a0a] px-3 focus-within:border-emerald-500 transition-colors">
@@ -118,7 +118,7 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-[#a1a1aa] mb-1.5">Taxa de juros</label>
                     <div className="flex border border-[#333] rounded-lg bg-[#0a0a0a] overflow-hidden focus-within:border-emerald-500 transition-colors">
@@ -164,7 +164,7 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between px-2">
+              <div className="flex flex-col sm:flex-row items-center justify-between px-2 gap-4 mt-2">
                  <button className="text-sm text-emerald-500 hover:text-emerald-400 font-medium transition-colors">
                    Simular aportes mensais
                  </button>
@@ -175,21 +175,21 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
             </div>
 
             {/* Results */}
-            <div className="lg:col-span-7 flex flex-col h-full">
+            <div className="lg:col-span-8 xl:col-span-8 flex flex-col h-full">
               <h3 className="text-xl font-bold text-white mb-4">Resultado</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div className="bg-emerald-900/40 p-5 rounded-xl border border-emerald-800 shadow-sm flex flex-col items-center justify-center text-center">
+                <div className="bg-emerald-900/40 p-4 xl:p-5 rounded-xl border border-emerald-800 shadow-sm flex flex-col items-center justify-center text-center">
                   <span className="text-emerald-100 text-xs font-bold uppercase tracking-wider mb-2">Valor total final</span>
-                  <span className="text-emerald-400 text-2xl font-bold">{formatCurrency(results.finalBalance)}</span>
+                  <span className="text-emerald-400 text-xl lg:text-lg xl:text-2xl font-bold truncate max-w-full">{formatCurrency(results.finalBalance)}</span>
                 </div>
-                <div className="bg-[#111111] p-5 rounded-xl border border-[#222] shadow-sm flex flex-col items-center justify-center text-center">
+                <div className="bg-[#111111] p-4 xl:p-5 rounded-xl border border-[#222] shadow-sm flex flex-col items-center justify-center text-center">
                   <span className="text-[#a1a1aa] text-xs font-bold uppercase tracking-wider mb-2">Valor total retirado</span>
-                  <span className="text-red-400 text-2xl font-bold">{formatCurrency(results.totalWithdrawn)}</span>
+                  <span className="text-red-400 text-xl lg:text-lg xl:text-2xl font-bold truncate max-w-full">{formatCurrency(results.totalWithdrawn)}</span>
                 </div>
-                <div className="bg-[#111111] p-5 rounded-xl border border-[#222] shadow-sm flex flex-col items-center justify-center text-center">
+                <div className="bg-[#111111] p-4 xl:p-5 rounded-xl border border-[#222] shadow-sm flex flex-col items-center justify-center text-center">
                   <span className="text-[#a1a1aa] text-xs font-bold uppercase tracking-wider mb-2">Total em juros</span>
-                  <span className="text-emerald-400 text-2xl font-bold">{formatCurrency(results.totalInterest)}</span>
+                  <span className="text-emerald-400 text-xl lg:text-lg xl:text-2xl font-bold truncate max-w-full">{formatCurrency(results.totalInterest)}</span>
                 </div>
               </div>
 
