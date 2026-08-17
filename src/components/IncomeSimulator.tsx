@@ -118,7 +118,7 @@ export const IncomeSimulator: React.FC<SimulatorProps> = ({ onClose }) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-[#a1a1aa] mb-1.5">Taxa de juros</label>
                     <div className="flex border border-[#333] rounded-lg bg-[#0a0a0a] overflow-hidden focus-within:border-emerald-500 transition-colors">
