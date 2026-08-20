@@ -7,9 +7,10 @@ import { HistoryTab } from './components/HistoryTab';
 import { CompoundInterestCalculator } from './components/CompoundInterestCalculator';
 import { IncomeSimulator } from './components/IncomeSimulator';
 import { TutorialModal } from './components/TutorialModal';
+import { BasicCalculator } from './components/BasicCalculator';
 import { auth, googleProvider, saveBudgetToFirestore, subscribeToBudget } from './firebase';
 import { signInWithPopup, User } from 'firebase/auth';
-import { LogOut, RotateCcw, Settings, ChevronDown, Save, Calculator, Menu, HelpCircle, TrendingDown } from 'lucide-react';
+import { LogOut, RotateCcw, Settings, ChevronDown, Save, Calculator, Menu, HelpCircle, TrendingDown, Percent, PlusSquare } from 'lucide-react';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -23,6 +24,7 @@ export default function App() {
   const [showCalculator, setShowCalculator] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showBasicCalculator, setShowBasicCalculator] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -194,10 +196,16 @@ export default function App() {
                    <Save className="w-5 h-5" /> Salvar Mês Atual
                  </button>
                  <button 
+                   onClick={() => { setShowBasicCalculator(true); setShowOptionsMenu(false); }}
+                   className="w-full text-left px-5 py-3 text-base font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-white transition-colors flex items-center gap-2"
+                 >
+                   <Calculator className="w-5 h-5" /> Calculadora Comum
+                 </button>
+                 <button 
                    onClick={() => { setShowCalculator(true); setShowOptionsMenu(false); }}
                    className="w-full text-left px-5 py-3 text-base font-medium text-[#71717a] hover:bg-[#1a1a1a] hover:text-[#eab308] transition-colors flex items-center gap-2"
                  >
-                   <Calculator className="w-5 h-5" /> Calc. de Juros
+                   <Percent className="w-5 h-5" /> Calc. de Juros
                  </button>
                  <button 
                    onClick={() => { setShowSimulator(true); setShowOptionsMenu(false); }}
@@ -290,6 +298,9 @@ export default function App() {
       )}
       {showTutorial && (
         <TutorialModal onClose={() => setShowTutorial(false)} />
+      )}
+      {showBasicCalculator && (
+        <BasicCalculator onClose={() => setShowBasicCalculator(false)} />
       )}
     </div>
   );
